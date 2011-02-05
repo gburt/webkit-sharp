@@ -34,9 +34,6 @@ get-sources:
 	@for file in webkit-1.0/webkit/*.h; do                  \
 		sed -i -e 's,^WEBKIT_API ,/*WEBKIT_API*/\r,' $$file; \
 	done
-	@for file in webkit-1.0/JavaScriptCore/*.h; do        \
-		sed -i -e 's,^JS_EXPORT ,/*JS_EXPORT*/\r,' $$file; \
-	done
 
 api: get-sources
 	PERLLIB=$(GTKSHARP_PREFIX)/share/perl5 \
