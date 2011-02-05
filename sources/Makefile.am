@@ -29,10 +29,12 @@ EXTRA_DIST = $(RAW_API) $(sources) $(customs) $(METADATA) \
 
 all: generated-stamp $(ASSEMBLY)
 
+# Remove WEBKIT_API prefix that gapi-parser wouldn't grok, and
+# move function return types to the same line as rest of signature
 get-sources:
 	cp -rf /usr/include/webkit-1.0 .
 	@for file in webkit-1.0/webkit/*.h; do                  \
-		sed -i -e 's,^WEBKIT_API ,/*WEBKIT_API*/\r,' $$file; \
+		perl -i -p -e 's/^WEBKIT_API (.+)\n/\1 /' $$file; \
 	done
 
 api: get-sources
