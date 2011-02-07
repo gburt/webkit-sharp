@@ -1,16 +1,70 @@
 <?xml version="1.0"?>
-<!-- TODO: navigation-requested -->
 <metadata>
 
 	<!-- Add missing signal in WebView -->
 	<add-node path="/api/namespace/object[@cname='WebKitWebView']">
+
+		<signal name="CreateWebView" cname="create-web-view" when="LAST">
+			<return-type type="WebKitWebView*" />
+			<parameters>
+				<parameter type="WebKitWebView*" name="webview" />
+				<parameter type="WebKitWebFrame*" name="frame" />
+			</parameters>
+		</signal>
+
+		<signal name="WebViewReady" cname="web-view-ready" when="LAST">
+			<return-type type="gboolean" />
+			<parameters>
+				<parameter type="WebKitWebView*" name="webview" />
+			</parameters>
+		</signal>
+
+		<signal name="CloseWebView" cname="close-web-view" when="LAST">
+			<return-type type="gboolean" />
+			<parameters>
+				<parameter type="WebKitWebView*" name="webview" />
+			</parameters>
+		</signal>
 
 		<signal name="NavigationRequested" cname="navigation-requested" when="LAST">
 			<return-type type="gint" />
 			<parameters>
 				<parameter type="WebKitWebView*" name="webview" />
 				<parameter type="WebKitWebFrame*" name="frame" />
-				<parameter type="WebKitNetworkRequest" name="request" />
+				<parameter type="WebKitNetworkRequest*" name="request" />
+			</parameters>
+		</signal>
+
+		<signal name="NewWindowPolicyDecisionRequested" cname="new-window-policy-decision-requested" when="LAST">
+			<return-type type="gboolean" />
+			<parameters>
+				<parameter type="WebKitWebView*" name="webview" />
+				<parameter type="WebKitWebFrame*" name="frame" />
+				<parameter type="WebKitNetworkRequest*" name="request" />
+				<parameter type="WebKitWebNavigationAction*" name="action" />
+				<parameter type="WebKitWebPolicyDecision*" name="decision" />
+			</parameters>
+		</signal>
+
+		<signal name="NavigationPolicyDecisionRequested" cname="navigation-policy-decision-requested" when="LAST">
+			<return-type type="gboolean" />
+			<parameters>
+				<parameter type="WebKitWebView*" name="webview" />
+				<parameter type="WebKitWebFrame*" name="frame" />
+				<parameter type="WebKitNetworkRequest*" name="request" />
+				<parameter type="WebKitWebNavigationAction*" name="action" />
+				<parameter type="WebKitWebPolicyDecision*" name="decision" />
+			</parameters>
+		</signal>
+
+		<signal name="MimeTypePolicyDecisionRequested" cname="mime-type-policy-decision-requested" when="LAST">
+			<return-type type="gboolean" />
+			<parameters>
+				<parameter type="WebKitWebView*" name="webview" />
+				<parameter type="WebKitWebFrame*" name="frame" />
+				<parameter type="WebKitNetworkRequest*" name="request" />
+				<parameter type="const-gchar*" name="mimetype" />
+				<parameter type="WebKitWebPolicyDecision*" name="decision" />
 			</parameters>
 		</signal>
 
@@ -24,11 +78,39 @@
 			</parameters>
 		</signal>
 
+		<signal name="DownloadRequested" cname="download-requested" when="LAST">
+			<return-type type="gboolean" />
+			<parameters>
+				<parameter type="WebKitWebView*" name="webview" />
+				<parameter type="WebKitDownload*" name="download" />
+			</parameters>
+		</signal>
+
+		<signal name="ResourceRequestStarting" cname="resource-request-starting" when="LAST">
+			<return-type type="void" />
+			<parameters>
+				<parameter type="WebKitWebView*" name="webview" />
+				<parameter type="WebKitWebFrame*" name="frame" />
+				<parameter type="WebKitWebResource*" name="resource" />
+				<parameter type="WebKitNetworkRequest*" name="request" />
+				<parameter type="WebKitNetworkResponse*" name="response" />
+			</parameters>
+		</signal>
+
 		<signal name="LoadStarted" cname="load-started" when="LAST">
 			<return-type type="void" />
 			<parameters>
 				<parameter type="WebKitWebView*" name="webview" />
 				<parameter type="WebKitWebFrame*" name="frame" />
+			</parameters>
+		</signal>
+
+		<signal name="LoadStatusChanged" cname="notify::load-status" when="LAST">
+			<return-type type="void" />
+			<parameters>
+				<parameter type="WebKitWebView*" name="webview" />
+				<parameter type="gpointer" name="paramSpec" hidden="1" />
+				<parameter type="gpointer" name="userData" hidden="1" />
 			</parameters>
 		</signal>
 
@@ -47,6 +129,17 @@
 				<parameter type="gint" name="progress" />
 			</parameters>
 		</signal>
+
+        <!-- TODO not sure what to do w/ GError
+		<signal name="LoadError" cname="load-error" when="LAST">
+			<return-type type="gboolean" />
+			<parameters>
+				<parameter type="WebKitWebView*" name="webview" />
+				<parameter type="WebKitWebFrame*" name="frame" />
+				<parameter type="const-gchar*" name="uri" />
+				<parameter type="GError*" name="error" />
+			</parameters>
+        </signal>-->
 
 		<signal name="LoadFinished" cname="load-finished" when="LAST">
 			<return-type type="void" />
@@ -82,6 +175,14 @@
 			</parameters>
 		</signal>
 
+		<signal name="PrintRequested" cname="print-requested" when="LAST">
+			<return-type type="gboolean" />
+			<parameters>
+				<parameter type="WebKitWebView*" name="webview" />
+				<parameter type="WebKitWebFrame*" name="frame" />
+			</parameters>
+		</signal>
+
 		<signal name="StatusBarTextChanged" cname="status-bar-text-changed" when="LAST">
 			<return-type type="void" />
 			<parameters>
@@ -103,6 +204,153 @@
 				<parameter type="WebKitWebView*" name="webview" />
 			</parameters>
 		</signal>
+
+		<signal name="ConsoleMessage" cname="console-message" when="LAST">
+			<return-type type="gboolean" />
+			<parameters>
+				<parameter type="WebKitWebView*" name="webview" />
+				<parameter type="const-gchar*" name="message" />
+				<parameter type="gint" name="line" />
+				<parameter type="const-gchar*" name="source_id" />
+			</parameters>
+		</signal>
+
+		<signal name="ScriptAlert" cname="script-alert" when="LAST">
+			<return-type type="gboolean" />
+			<parameters>
+				<parameter type="WebKitWebView*" name="webview" />
+				<parameter type="WebKitWebFrame*" name="frame" />
+				<parameter type="const-gchar*" name="message" />
+			</parameters>
+		</signal>
+
+		<signal name="ScriptConfirm" cname="script-confirm" when="LAST">
+			<return-type type="gboolean" />
+			<parameters>
+				<parameter type="WebKitWebView*" name="webview" />
+				<parameter type="WebKitWebFrame*" name="frame" />
+				<parameter type="const-gchar*" name="message" />
+				<parameter type="gboolean*" name="confirmed" />
+			</parameters>
+		</signal>
+
+		<signal name="ScriptPrompt" cname="script-prompt" when="LAST">
+			<return-type type="gboolean" />
+			<parameters>
+				<parameter type="WebKitWebView*" name="webview" />
+				<parameter type="WebKitWebFrame*" name="frame" />
+				<parameter type="const-gchar*" name="message" />
+				<parameter type="const-gchar*" name="defaultValue" />
+				<parameter type="gchar*" name="text" pass_as="ref" />
+			</parameters>
+		</signal>
+
+		<signal name="CreatePluginWidget" cname="create-plugin-widget" when="LAST">
+			<return-type type="GtkWidget" />
+			<parameters>
+				<parameter type="WebKitWebView*" name="webview" />
+				<parameter type="const-gchar*" name="mimetype" />
+				<parameter type="const-gchar*" name="uri" />
+				<parameter type="GHashTable*" name="params" hidden="1" />
+			</parameters>
+		</signal>
+
+        <!-- TODO more events to find:
+        webkit_web_view_signals[SELECT_ALL] = g_signal_new("select-all",
+                G_TYPE_FROM_CLASS(webViewClass),
+                (GSignalFlags)(G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION),
+                G_STRUCT_OFFSET(WebKitWebViewClass, select_all),
+                NULL, NULL,
+                g_cclosure_marshal_VOID__VOID,
+                G_TYPE_NONE, 0);
+
+        webkit_web_view_signals[CUT_CLIPBOARD] = g_signal_new("cut-clipboard",
+                G_TYPE_FROM_CLASS(webViewClass),
+                (GSignalFlags)(G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION),
+                G_STRUCT_OFFSET(WebKitWebViewClass, cut_clipboard),
+                NULL, NULL,
+                g_cclosure_marshal_VOID__VOID,
+                G_TYPE_NONE, 0);
+
+        webkit_web_view_signals[COPY_CLIPBOARD] = g_signal_new("copy-clipboard",
+                G_TYPE_FROM_CLASS(webViewClass),
+                (GSignalFlags)(G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION),
+                G_STRUCT_OFFSET(WebKitWebViewClass, copy_clipboard),
+                NULL, NULL,
+                g_cclosure_marshal_VOID__VOID,
+                G_TYPE_NONE, 0);
+
+        webkit_web_view_signals[PASTE_CLIPBOARD] = g_signal_new("paste-clipboard",
+                G_TYPE_FROM_CLASS(webViewClass),
+                (GSignalFlags)(G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION),
+                G_STRUCT_OFFSET(WebKitWebViewClass, paste_clipboard),
+                NULL, NULL,
+                g_cclosure_marshal_VOID__VOID,
+                G_TYPE_NONE, 0);
+
+        webkit_web_view_signals[UNDO] = g_signal_new("undo",
+                G_TYPE_FROM_CLASS(webViewClass),
+                (GSignalFlags)(G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION),
+                G_STRUCT_OFFSET(WebKitWebViewClass, undo),
+                NULL, NULL,
+                g_cclosure_marshal_VOID__VOID,
+                G_TYPE_NONE, 0);
+
+        webkit_web_view_signals[REDO] = g_signal_new("redo",
+                G_TYPE_FROM_CLASS(webViewClass),
+                (GSignalFlags)(G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION),
+                G_STRUCT_OFFSET(WebKitWebViewClass, redo),
+                NULL, NULL,
+                g_cclosure_marshal_VOID__VOID,
+                G_TYPE_NONE, 0);
+
+        webkit_web_view_signals[MOVE_CURSOR] = g_signal_new("move-cursor",
+                G_TYPE_FROM_CLASS(webViewClass),
+                (GSignalFlags)(G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION),
+                G_STRUCT_OFFSET(WebKitWebViewClass, move_cursor),
+                NULL, NULL,
+                webkit_marshal_BOOLEAN__ENUM_INT,
+                G_TYPE_BOOLEAN, 2,
+                GTK_TYPE_MOVEMENT_STEP,
+                G_TYPE_INT);
+
+        webkit_web_view_signals[DATABASE_QUOTA_EXCEEDED] = g_signal_new("database-quota-exceeded",
+                G_TYPE_FROM_CLASS(webViewClass),
+                (GSignalFlags) (G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION),
+                0,
+                NULL, NULL,
+                webkit_marshal_VOID__OBJECT_OBJECT,
+                G_TYPE_NONE, 2,
+                G_TYPE_OBJECT, G_TYPE_OBJECT);
+
+        webkit_web_view_signals[GEOLOCATION_POLICY_DECISION_REQUESTED] = g_signal_new("geolocation-policy-decision-requested",
+                G_TYPE_FROM_CLASS(webViewClass),
+                (GSignalFlags)(G_SIGNAL_RUN_LAST),
+                0,
+                NULL, NULL,
+                webkit_marshal_BOOLEAN__OBJECT_OBJECT,
+                G_TYPE_BOOLEAN, 2,
+                WEBKIT_TYPE_WEB_FRAME,
+                WEBKIT_TYPE_GEOLOCATION_POLICY_DECISION);
+
+        webkit_web_view_signals[GEOLOCATION_POLICY_DECISION_CANCELLED] = g_signal_new("geolocation-policy-decision-cancelled",
+                G_TYPE_FROM_CLASS(webViewClass),
+                (GSignalFlags)(G_SIGNAL_RUN_LAST),
+                0,
+                NULL, NULL,
+                g_cclosure_marshal_VOID__OBJECT,
+                G_TYPE_NONE, 1,
+                WEBKIT_TYPE_WEB_FRAME);
+
+        webkit_web_view_signals[DOCUMENT_LOAD_FINISHED] = g_signal_new("document-load-finished",
+                G_TYPE_FROM_CLASS(webViewClass),
+                (GSignalFlags)(G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION),
+                0,
+                NULL, NULL,
+                g_cclosure_marshal_VOID__OBJECT,
+                G_TYPE_NONE, 1,
+                WEBKIT_TYPE_WEB_FRAME);
+        -->
 
 	</add-node>
 
