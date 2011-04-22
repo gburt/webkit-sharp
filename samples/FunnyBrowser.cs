@@ -40,10 +40,10 @@ namespace FunnyBrowser
 		{
 			string url = (args.Length > 0) ? args[0] : "";
 
-			Application.Init ();
+			Gtk.Application.Init ();
 			MainWindow window = new MainWindow (url);
 			window.Show ();
-			Application.Run ();
+			Gtk.Application.Run ();
 		}
 	}
 
@@ -181,7 +181,7 @@ namespace FunnyBrowser
 
 		protected void OnDeleteEvent (object sender, DeleteEventArgs args)
 		{
-			Application.Quit ();
+			Gtk.Application.Quit ();
 			args.RetVal = true;
 		}
 		
