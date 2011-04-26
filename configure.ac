@@ -107,7 +107,7 @@ if test "x$GACUTIL" = "xno" ; then
 	AC_MSG_ERROR([No gacutil tool found])
 fi
 
-GACUTIL_FLAGS="/package $ASSEMBLY_NAME /root "'$(DESTDIR)$(prefix)/lib'
+GACUTIL_FLAGS="/package $ASSEMBLY_NAME /root "'$(DESTDIR)$(libdir)'
                                      
 AC_SUBST(RUNTIME)
 AC_SUBST(CSC)
