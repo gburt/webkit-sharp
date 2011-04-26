@@ -1,3 +1,4 @@
+dnl The initialization part
 AC_INIT([webkit-sharp], [0.3])
 AC_CONFIG_SRCDIR([README])
 AC_CANONICAL_TARGET
@@ -56,11 +57,13 @@ if test "x$PKG_CONFIG" = "xno"; then
 	AC_MSG_ERROR(['pkg-config' is not in your PATH.])
 fi
 
+
 dnl Check for mono
 PKG_CHECK_MODULES(MONO, mono >= $MONO_REQUIRED_VERSION, has_mono="yes", has_mono="no")
 if test "x$has_mono" = "xno" ; then
 	AC_MSG_ERROR([Mono at version at least $MONO_REQUIRED_VERSION not found])
 fi
+
 
 dnl Check for mono interpreter (mint)
 PKG_CHECK_MODULES(MINT_DEPENDENCY, mint >= $MONO_REQUIRED_VERSION, has_mint="yes", has_mint="no")
@@ -97,11 +100,21 @@ else
 	fi
 fi
 
+AC_SUBST(LIB_PREFIX)
+AC_SUBST(LIB_SUFFIX)
+AC_SUBST(RUNTIME)
+
+
+dnl C# compiler checks
 CS="C#"
 if test "x$CSC" = "xno" ; then
     AC_MSG_ERROR([No $CS compiler found])
 fi
 
+AC_SUBST(CSC)
+
+
+dnl Global Assembly Cache util check
 AC_PATH_PROG(GACUTIL, gacutil, no)
 if test "x$GACUTIL" = "xno" ; then
 	AC_MSG_ERROR([No gacutil tool found])
@@ -109,29 +122,29 @@ fi
 
 GACUTIL_FLAGS="/package $ASSEMBLY_NAME /root "'$(DESTDIR)$(libdir)'
                                      
-AC_SUBST(RUNTIME)
-AC_SUBST(CSC)
 AC_SUBST(GACUTIL)
 AC_SUBST(GACUTIL_FLAGS)
-AC_SUBST(LIB_PREFIX)
-AC_SUBST(LIB_SUFFIX)
+
 
 dnl Check for gtk-sharp
 PKG_CHECK_MODULES(GTK_SHARP, gtk-sharp-2.0 >= $GTKSHARP_REQUIRED_VERSION)
+gtksharp_prefix=`pkg-config --variable=prefix gtk-sharp-2.0`
+
 AC_SUBST(GTK_SHARP_CFLAGS)
 AC_SUBST(GTK_SHARP_LIBS)
-gtksharp_prefix=`pkg-config --variable=prefix gtk-sharp-2.0`
 AC_SUBST(gtksharp_prefix)
+
 
 dnl Check for WebKit
 PKG_CHECK_MODULES(WEBKIT, webkit-1.0 >= $WEBKIT_REQUIRED_VERSION)
-AC_SUBST(WEBKIT_LIBS)
 webkit_prefix=`pkg-config --variable=prefix webkit-1.0`
 webkit_version=`pkg-config --modversion webkit-1.0`
 ASSEMBLY_PACKAGE_VERSION=$webkit_version
 
+AC_SUBST(WEBKIT_LIBS)
 AC_SUBST(webkit_prefix)
 AC_SUBST(ASSEMBLY_PACKAGE_VERSION)
+
 
 dnl Check for gapi
 AC_PATH_PROG(GAPI_PARSER, gapi2-parser, no)
@@ -144,7 +157,6 @@ if test "x$GAPI_PARSER" = "xno"; then
 	AC_MSG_RESULT($GAPI_PARSER)
 	GAPI_PARSER="$MONO $GAPI_PARSER"
 fi
-AC_SUBST(GAPI_PARSER)
 
 AC_PATH_PROG(GAPI_FIXUP, gapi2-fixup, no)
 if test "x$GAPI_FIXUP" = "xno"; then
@@ -156,7 +168,6 @@ if test "x$GAPI_FIXUP" = "xno"; then
 	AC_MSG_RESULT($GAPI_FIXUP)
 	GAPI_FIXUP="$MONO $GAPI_FIXUP"
 fi
-AC_SUBST(GAPI_FIXUP)
 
 AC_PATH_PROG(GAPI_CODEGEN, gapi2-codegen, no)
 if test "x$GAPI_CODEGEN" = "xno"; then
@@ -168,7 +179,11 @@ if test "x$GAPI_CODEGEN" = "xno"; then
 	AC_MSG_RESULT([$GAPI_CODEGEN])
 	GAPI_CODEGEN="$MONO $GAPI_CODEGEN"
 fi
+
+AC_SUBST(GAPI_PARSER)
+AC_SUBST(GAPI_FIXUP)
 AC_SUBST(GAPI_CODEGEN)
+
 
 dnl Check for monodoc
 # We check existance only if documentation is wanted
@@ -186,15 +201,15 @@ else
 	MDASSEMBLER=
 	MONODOCER=
 fi
-echo "checking whether to create documentation... $enable_monodoc"
-
-AC_SUBST(MDASSEMBLER)
-AC_SUBST(MONODOCER)
 
 AM_CONDITIONAL(ENABLE_MONODOC, test "x$enable_monodoc" = "xyes")
 
+AC_SUBST(MDASSEMBLER)
+AC_SUBST(MONODOCER)
 AC_SUBST(enable_monodoc)
 
+
+dnl Configuration files
 AC_CONFIG_FILES([
 	Makefile
 	webkit-sharp.spec
@@ -206,6 +221,9 @@ AC_CONFIG_FILES([
 	sources/webkit-sharp.dll.config
 ])
 AC_CONFIG_COMMANDS([default],[[ echo timestamp > stamp-h ]],[[]])
+
+
+dnl Output for user info
 AC_OUTPUT
 
 echo ""
