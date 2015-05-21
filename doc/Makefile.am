@@ -1,6 +1,6 @@
 if ENABLE_MONODOC
 TARGETS = $(ASSEMBLY_NAME)-docs.source $(ASSEMBLY_NAME)-docs.zip $(ASSEMBLY_NAME)-docs.tree
-docsdir = $(prefix)/lib/monodoc/sources
+docsdir = $(libdir)/monodoc/sources
 docs_DATA = $(TARGETS)
 else
 TARGETS = 
